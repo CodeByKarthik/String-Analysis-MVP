@@ -28,6 +28,13 @@ _registry = create_default_registry()
 
 @router.get("/analysers")
 def list_analysers() -> dict[str, list[str]]:
+    """
+    List all available analysers in the registry.
+
+    Returns:
+        dict[str, list[str]]: A dictionary containing
+        the list of available analysers.
+    """
     return {"available": _registry.available}
 
 
@@ -37,6 +44,20 @@ def analyse(
     analyses: list[AnalysisType] = Query(...),  # noqa: B008
     include_spaces: bool = True,
 ) -> AnalysisResponse:
+    """
+    Analyse the given text using the specified analysis types.
+
+    Args:
+        - request (AnalysisRequest): The analysis request containing
+        the text to be analysed.
+        - analyses (list[AnalysisType]): A list of analysis
+        types to perform.
+        - include_spaces (bool, optional): Whether to include
+        spaces in the analysis. Defaults to True.
+
+    Returns:
+        AnalysisResponse: The response containing the analysis results and metadata.
+    """
     request_id = str(uuid.uuid4())
     start = time.perf_counter()
 

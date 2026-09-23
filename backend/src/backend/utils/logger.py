@@ -10,6 +10,12 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 def configure_logging(level: str = "INFO") -> None:
+    """
+    Configure the logging settings for the application.
+
+    Args:
+        level (str, optional): The logging level. Defaults to "INFO".
+    """
     logging.basicConfig(
         level=getattr(logging, level.upper(), logging.INFO),
         format=LOG_FORMAT,
@@ -36,5 +42,14 @@ def configure_logging(level: str = "INFO") -> None:
 
 
 def get_logger(name: str) -> structlog.BoundLogger:
+    """
+    Get a configured logger instance.
+
+    Args:
+        name (str): The name of the logger.
+
+    Returns:
+        structlog.BoundLogger: The configured logger instance.
+    """
     configure_logging()
     return structlog.get_logger(name)
