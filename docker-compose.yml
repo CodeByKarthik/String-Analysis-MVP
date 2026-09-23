@@ -1,0 +1,14 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: string-analysis-backend
+    env_file:
+      - .env
+    environment:
+      APP_VERSION: ${APP_VERSION}
+      API_HOST: ${API_HOST}
+      API_PORT: ${API_PORT}
+    ports:
+      - "${API_PORT}:${API_PORT}"
