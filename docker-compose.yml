@@ -12,7 +12,6 @@ services:
       API_PORT: ${API_PORT}
     ports:
       - "${API_PORT}:${API_PORT}"
-    restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:v2.54.1
@@ -41,7 +40,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
     depends_on:
       - prometheus
     restart: unless-stopped
