@@ -32,5 +32,10 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-packages --group dev
 
+      - name: Download NLTK tokenizer data
+        run: |
+          chmod +x backend/scripts/bootstrap_nltk_data.sh
+          ./backend/scripts/bootstrap_nltk_data.sh
+
       - name: Run tests
         run: uv run pytest backend/tests -q
