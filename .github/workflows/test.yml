@@ -11,9 +11,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      APP_VERSION: ${{ vars.APP_VERSION }}
-      API_HOST: ${{ vars.API_HOST }}
-      API_PORT: ${{ vars.API_PORT }}
+      APP_VERSION: ${{ secrets.APP_VERSION }}
+      API_HOST: ${{ secrets.API_HOST }}
+      API_PORT: ${{ secrets.API_PORT }}
 
     steps:
       - name: Check out repository
