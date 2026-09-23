@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Publish Docker Image - GHRC
 
 on:
   push:
@@ -13,10 +13,9 @@ env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/string-analysis-backend
 
 jobs:
-  jobs:
-    testing:
-      uses: ./.github/workflows/test.yml
-      secrets: inherit
+  testing:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
 
   build-and-push:
     needs: testing
