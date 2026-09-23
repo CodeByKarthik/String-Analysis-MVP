@@ -97,3 +97,17 @@ def test_no_analyses_specified_rejected(client: TestClient) -> None:
         json={"text": "Hello"},
     )
     assert response.status_code == 422
+
+
+def test_analysis_requests_metric_exported(client: TestClient) -> None:
+    response = client.post(
+        f"{ANALYSE_URL}?analyses=word_count",
+        json={"text": "Hello world"},
+    )
+    assert response.status_code == 200
+
+    metrics_response = client.get("/metrics")
+    assert metrics_response.status_code == 200
+    metrics = metrics_response.text
+    assert "analysis_requests_total" in metrics
+    assert 'status="success"' in metrics
