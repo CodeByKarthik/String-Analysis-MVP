@@ -2,13 +2,19 @@
   "annotations": {
     "list": []
   },
+  "description": "Minimal backend monitoring dashboard for request volume, latency, error rate, and successful analysis requests.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": null,
   "links": [],
   "panels": [
+
+
     {
+      "title": "Request Rate",
+      "description": "Tracks how many incoming HTTP requests the API is receiving over time by method.",
+      "type": "timeseries",
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
@@ -29,11 +35,14 @@
           "legendFormat": "{{method}}",
           "refId": "A"
         }
-      ],
-      "title": "Request Rate",
-      "type": "timeseries"
+      ]
     },
+
+
     {
+      "title": "Request Latency p95",
+      "description": "Shows the 95th percentile response time so the slowest requests are visible at a glance.",
+      "type": "timeseries",
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
@@ -54,11 +63,14 @@
           "legendFormat": "p95",
           "refId": "A"
         }
-      ],
-      "title": "Request Latency p95",
-      "type": "timeseries"
+      ]
     },
+
+
     {
+      "title": "Error Rate",
+      "description": "Displays the percentage of requests that result in HTTP 5xx responses; stays at 0 during normal operation.",
+      "type": "timeseries",
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
@@ -79,11 +91,14 @@
           "legendFormat": "5xx rate",
           "refId": "A"
         }
-      ],
-      "title": "Error Rate",
-      "type": "timeseries"
+      ]
     },
+
+
     {
+      "title": "Analysis Requests Processed",
+      "description": "Shows how often the app successfully processes a user analysis request.",
+      "type": "timeseries",
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
@@ -104,10 +119,10 @@
           "legendFormat": "successful analyses",
           "refId": "A"
         }
-      ],
-      "title": "Analysis Requests Processed",
-      "type": "timeseries"
+      ]
     }
+
+    
   ],
   "refresh": "10s",
   "schemaVersion": 39,
