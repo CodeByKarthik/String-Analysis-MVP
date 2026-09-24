@@ -1,4 +1,7 @@
+from backend.database import SessionLocal
+from backend.models.audit_log import AuditLog
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 
 ANALYSE_URL = "/analyse"
 
@@ -111,3 +114,27 @@ def test_analysis_requests_metric_exported(client: TestClient) -> None:
     metrics = metrics_response.text
     assert "analysis_requests_total" in metrics
     assert 'status="success"' in metrics
+
+
+def test_analysis_request_and_response_are_audited(client: TestClient) -> None:
+    response = client.post(
+        f"{ANALYSE_URL}?analyses=character_count&include_spaces=false",
+        json={"text": "Hello world"},
+    )
+    assert response.status_code == 200
+
+    request_id = response.json()["metadata"]["request_id"]
+    with SessionLocal() as session:
+        audit_log = session.scalar(
+            select(AuditLog).where(AuditLog.request_id == request_id)
+        )
+
+    assert audit_log is not None
+    assert audit_log.query_parameters == {
+        "analyses": ["character_count"],
+        "include_spaces": ["false"],
+    }
+    assert audit_log.request_body == {"text": "Hello world"}
+    assert isinstance(audit_log.response_body, dict)
+    assert audit_log.response_body["results"] == {"character_count": 10}
+    assert audit_log.status_code == 200
