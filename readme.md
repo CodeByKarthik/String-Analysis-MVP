@@ -16,6 +16,7 @@ Once the containers are up:
 - **OpenAPI docs:** http://localhost:8000/docs
 - **Prometheus:** http://localhost:9090
 - **Grafana:** http://localhost:3000
+- **PostgreSQL:** `localhost:5432`
 
 ### Available Analysis
 
@@ -58,6 +59,35 @@ Expected response:
 | `GET`  | `/docs`           | Interactive OpenAPI UI               |
 
 
+## Database audit logging
+
+Every API request is stored in the PostgreSQL `audit_logs` table. Each row contains the request ID, HTTP method, path, query parameters, request body, response body, status code, client IP, and timestamp. Existing structured console logs remain enabled.
+
+Inspect recent audit records:
+
+```bash
+docker compose exec postgres \
+  psql -U string_analysis_user -d string_analysis_db \
+  -c "SELECT * FROM audit_logs ORDER BY id DESC LIMIT 10;"
+```
+
+### Connect with DataGrip
+
+```text
+Host: localhost
+Port: 5432
+Database: string_analysis_db
+User: [your-password]
+Password: [your-password]
+```
+
+JDBC URL:
+
+```text
+jdbc:postgresql://yout-host:[port1234]/string_analysis_db
+```
+
+
 ### `POST /analyse`
 
 **Query parameters**
@@ -70,16 +100,16 @@ Expected response:
 
 ### Adding a new analyser
 
-1. Create a class in `backend/analysers/` inheriting from `BaseAnalyser`, setting `name` and implementing `analyse()`.
-2. Add the class to `_DEFAULT_ANALYSERS` in `registry.py`.
-3. Add the name to the `AnalysisType` enum in `schemas.py`.
+1. Create a class in `backend/src/backend/core/analysers/` inheriting from `BaseAnalyser`, setting `name` and implementing `analyse()`.
+2. Add the class to `_DEFAULT_ANALYSERS` in `backend/src/backend/core/registry.py`.
+3. Add the name to the `AnalysisType` enum in `backend/src/backend/schema/analysis_schema.py`.
 
 No changes to the API layer, the registry itself, or error handling are needed.
 
 
 ## Testing
 
-Ten integration tests cover happy paths, boundary conditions, and validation failures.
+Twelve integration tests cover analysis behavior, validation failures, metrics, and audit persistence.
 
 ```bash
 uv run pytest
