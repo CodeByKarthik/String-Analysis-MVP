@@ -27,6 +27,13 @@ _registry = create_default_registry()
 
 @router.get("/analysers")
 def list_analysers() -> dict[str, list[str]]:
+    """
+    List all available analysers in the registry.
+
+    Returns:
+        dict[str, list[str]]: A dictionary containing
+        the list of available analysers.
+    """
     return {"available": _registry.available}
 
 

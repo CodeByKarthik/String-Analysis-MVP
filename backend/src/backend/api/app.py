@@ -15,6 +15,7 @@ from backend.config import settings
 from backend.database import init_database
 from backend.utils.logger import configure_logging, get_logger
 
+# Initialize logging
 configure_logging()
 logger = get_logger(__name__)
 
@@ -33,10 +34,12 @@ app = FastAPI(
 app.add_middleware(AuditLoggingMiddleware)
 app.add_middleware(RequestResponseLoggingMiddleware)
 
+# Initialize Prometheus instrumentation
 Instrumentator().instrument(app).expose(
     app, endpoint="/metrics", include_in_schema=False
 )
 
+# ---- Include API routers ----
 app.include_router(health_router)
 app.include_router(analysis_router)
 

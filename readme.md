@@ -1,7 +1,7 @@
 
 ## Overview
 
-A production-shaped REST API for text analysis which includes audit logs and system observability. Submit text via a `POST` request, select which analyses to run, and receive structured JSON results.
+A production-shaped REST API for text analysis which includes logs and system observability. Submit text via a `POST` request, select which analyses to run, and receive structured JSON results.
 
 ## Quickstart
 
