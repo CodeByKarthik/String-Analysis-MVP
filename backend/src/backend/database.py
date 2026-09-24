@@ -8,7 +8,6 @@ from sqlalchemy.pool import StaticPool
 
 from backend.config import settings
 
-
 # PostgreSQL and SQLite (in-memory) database configuration
 
 engine_options: dict[str, Any] = {"pool_pre_ping": True}
