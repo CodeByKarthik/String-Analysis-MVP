@@ -37,6 +37,19 @@ def analyse(
     analyses: list[AnalysisType] = Query(...),  # noqa: B008
     include_spaces: bool = True,
 ) -> AnalysisResponse:
+    """
+    Perform the requested analyses on the provided text payload.
+
+    Args:
+        request (Request): The incoming FastAPI request object.
+        payload (AnalysisRequest): The analysis request payload.
+        analyses (list[AnalysisType]): The list of analyses to perform.
+        include_spaces (bool): Whether to include spaces in the analysis.
+
+    Returns:
+        AnalysisResponse: The response containing analysis results
+        and metadata.
+    """
     request_id = request.state.request_id
     start = time.perf_counter()
 
