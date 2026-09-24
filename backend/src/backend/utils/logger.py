@@ -9,6 +9,16 @@ LOG_FORMAT = "%(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
+class MetricsAccessFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        return not (
+            record.name == "uvicorn.access"
+            and len(record.args) >= 3  # type: ignore[arg-type]
+            and str(record.args[2]).split("?", maxsplit=1)[0]  # type: ignore[index]
+            == "/metrics"
+        )
+
+
 def configure_logging(level: str = "INFO") -> None:
     """
     Configure the logging settings for the application.
@@ -39,6 +49,7 @@ def configure_logging(level: str = "INFO") -> None:
 
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
+    logging.getLogger("uvicorn.access").addFilter(MetricsAccessFilter())
 
 
 def get_logger(name: str) -> structlog.BoundLogger:
