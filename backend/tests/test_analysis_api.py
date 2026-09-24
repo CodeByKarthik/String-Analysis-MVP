@@ -1,7 +1,7 @@
 from backend.database import SessionLocal
 from backend.models.audit_log import AuditLog
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 ANALYSE_URL = "/analyse"
 
@@ -138,3 +138,16 @@ def test_analysis_request_and_response_are_audited(client: TestClient) -> None:
     assert isinstance(audit_log.response_body, dict)
     assert audit_log.response_body["results"] == {"character_count": 10}
     assert audit_log.status_code == 200
+
+
+def test_get_requests_are_not_audited(client: TestClient) -> None:
+    with SessionLocal() as session:
+        before = session.scalar(select(func.count()).select_from(AuditLog))
+
+    response = client.get("/docs")
+    assert response.status_code == 200
+
+    with SessionLocal() as session:
+        after = session.scalar(select(func.count()).select_from(AuditLog))
+
+    assert after == before

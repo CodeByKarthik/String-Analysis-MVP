@@ -74,7 +74,11 @@ class AuditLoggingMiddleware:
             receive (Receive): The ASGI receive callable.
             send (Send): The ASGI send callable.
         """
-        if scope["type"] != "http" or scope["path"] == "/metrics":
+        if not (
+            scope["type"] == "http"
+            and scope["method"] == "POST"
+            and scope["path"] == "/analyse"
+        ):
             await self.app(scope, receive, send)
             return
 

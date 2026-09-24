@@ -7,7 +7,6 @@ from fastapi.testclient import TestClient
 os.environ["DATABASE_URL"] = "sqlite+pysqlite:///:memory:"
 
 from backend.api.app import app
-from fastapi.testclient import TestClient
 
 
 @pytest.fixture(scope="session")
