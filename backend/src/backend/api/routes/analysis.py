@@ -1,8 +1,7 @@
 import time
-import uuid
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from prometheus_client import Counter
 
 from backend.common.exceptions import AnalyserNotFoundError, AnalysisExecutionError
@@ -33,11 +32,12 @@ def list_analysers() -> dict[str, list[str]]:
 
 @router.post("/analyse", response_model=AnalysisResponse)
 def analyse(
-    request: AnalysisRequest,
+    request: Request,
+    payload: AnalysisRequest,
     analyses: list[AnalysisType] = Query(...),  # noqa: B008
     include_spaces: bool = True,
 ) -> AnalysisResponse:
-    request_id = str(uuid.uuid4())
+    request_id = request.state.request_id
     start = time.perf_counter()
 
     results: dict[str, Any] = {}
@@ -45,7 +45,7 @@ def analyse(
         try:
             results[analysis.value] = _registry.run(
                 analysis.value,
-                request.text,
+                payload.text,
                 params={"include_spaces": include_spaces},
             )
         except AnalyserNotFoundError as exc:
@@ -63,7 +63,7 @@ def analyse(
         results=results,
         metadata={
             "request_id": request_id,
-            "input_length": len(request.text),
+            "input_length": len(payload.text),
             "processing_time_ms": round((time.perf_counter() - start) * 1000, 2),
         },
     )
